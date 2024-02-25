@@ -1,16 +1,14 @@
 #!/bin/sh
 
-docker run -i -v `pwd`:/dovecot_exporter alpine:3.8 /bin/sh << 'EOF'
+docker run -i -v `pwd`:/dovecot_exporter golang:1.17 /bin/sh << 'EOF'
 set -ex
 
 # Install prerequisites for the build process.
-apk update
-apk add ca-certificates git go libc-dev
-update-ca-certificates
+apt-get update -q
+apt-get install -yq libsystemd-dev
 
-# Build the dovecot_exporter.
 cd /dovecot_exporter
-export GOPATH=/gopath
+
 go get -d ./...
 go build --ldflags '-extldflags "-static"'
 strip dovecot_exporter
